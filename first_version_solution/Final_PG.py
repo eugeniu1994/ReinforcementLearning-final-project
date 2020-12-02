@@ -107,18 +107,9 @@ def train(render = False, checkpoint='model.mdl'):
     env = gym.make("WimblepongVisualMultiplayer-v0")
     env.unwrapped.scale, env.unwrapped.fps = 1, 30
 
-    policy = Policy()
-    try:
-        policy = Policy()
-        w = torch.load(checkpoint, map_location=device)
-        policy.load_state_dict(w, strict=False)
-        policy.train()
-        print("Resumed checkpoint {}".format(checkpoint))
-    except:
-        print("Starting from scratch")
-    player = Agent(policy=policy)
+    player = Agent()
     opponent = wimblepong.SimpleAi(env, 2)
-    env.set_names('player', opponent.get_name())
+    env.set_names('Undisputed', opponent.get_name())
 
     episode, max_games, highest_running_winrate = 0, 10000, 0
     scores, game_lengths, game_lengths_Avg, run_avg_plot = [], [], [], []
@@ -135,7 +126,7 @@ def train(render = False, checkpoint='model.mdl'):
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()
 
-            x = torch.tensor(x).to(device)
+            x = torch.tensor(x).to(player.train_device)
             action = player.get_action(x)
             action2 = opponent.get_action()
             (observation, observation2), (r1, r2), done, info = env.step((action, action2))
@@ -170,7 +161,7 @@ def train(render = False, checkpoint='model.mdl'):
             highest_running_winrate = run_avg
             print('highest_running_winrate ', highest_running_winrate)
             print("model_" + str(highest_running_winrate) + '.mdl')
-            torch.save(policy.state_dict(), "model_" + str(highest_running_winrate) + '.mdl')
+            torch.save(player.policy.state_dict(), "model_" + str(highest_running_winrate) + '.mdl')
             print('Saved policy----------------------------------------------------------------')
 
         if episode % 100 == 0:
@@ -240,7 +231,6 @@ def test(render = False, checkpoint='model.mdl'):
 #train(render=True)
 
 #Testing
-#checkpoint = 'model.mdl'
 checkpoint = '/home/eugen/Desktop/MyCourses/x_Github_Folders/RL_Project/first_version_solution/model_0.65.mdl'
 test(render=False, checkpoint = checkpoint)
 
