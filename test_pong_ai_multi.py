@@ -10,6 +10,7 @@ import numpy as np
 import argparse
 import wimblepong
 from PIL import Image
+import cv2
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--headless", action="store_true", help="Run in headless mode")
@@ -28,7 +29,13 @@ episodes = 100000
 player_id = 1
 opponent_id = 3 - player_id
 opponent = wimblepong.SimpleAi(env, opponent_id)
-player = wimblepong.SimpleAi(env, player_id)
+
+from DQN.agent import Agent, Network
+
+#player = wimblepong.SimpleAi(env, player_id)
+player = Agent(player_id)
+player.load_model()
+print('Loded model')
 
 # Set the names for both SimpleAIs
 env.set_names(player.get_name(), opponent.get_name())
@@ -36,12 +43,17 @@ env.set_names(player.get_name(), opponent.get_name())
 win1 = 0
 for i in range(0,episodes):
     done = False
+    (ob1,ob2) = env.reset()
+    player.reset()
     while not done:
         # Get the actions from both SimpleAIs
-        action1 = player.get_action()
+        action1 = player.get_action(ob1)
         action2 = opponent.get_action()
         # Step the environment and get the rewards and new observations
         (ob1, ob2), (rew1, rew2), done, info = env.step((action1, action2))
+        #print('ob1 ',ob1)
+        #print('ob2 ', ob2)
+        #print('ob1 ', np.shape(ob1))
         #img = Image.fromarray(ob1)
         #img.save("ob1.png")
         #img = Image.fromarray(ob2)
