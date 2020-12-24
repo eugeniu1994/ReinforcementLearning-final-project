@@ -79,7 +79,7 @@ class TrainPG_Agent(object):
 
         return rewards, observations, game_lengths
 
-    def train(self, render=False, checkpoint='model_stack.mdl'):
+    def train(self, render=False, checkpoint='model.mdl'):
         print("_________________TRAINING___________________")
         policy = Policy()
         try:
@@ -131,7 +131,7 @@ class TrainPG_Agent(object):
         torch.save(policy.state_dict(), "model_" + str(episode) + '.mdl')
         print('Training finished')
 
-    def test(self, checkpoint='model_stack.mdl', render=True, games = 100):
+    def test(self, checkpoint='model.mdl', render=True, games = 100):
         print("_________________TESTING___________________")
         policy = Policy()
         w = torch.load(checkpoint, map_location=self.device)

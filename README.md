@@ -4,6 +4,15 @@ This project is a two player version of the pong-v0 OpenAI Gym environment.
 The environment is used in the Reinforcement Learning course at Aalto University,
 Finland.
 
+<img src="pong.gif" />
+
+Reinforcement Learning agent learn from pixels to play Pong game.
+
+1. Pass the image through CNN to extract the features
+2. Used fully-connected layers to learn the behaviour
+3. Used softmax to output 3 actions probabilities (up, down, stay)
+4. Policy gradient optimize the weights to maximize the reward
+
 ## How to use
 - Clone the repository: `https://github.com/aalto-intelligent-robotics/Wimblepong`.
 - Install the dependencies listed in requirements.txt.
